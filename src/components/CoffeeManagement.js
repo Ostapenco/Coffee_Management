@@ -1,25 +1,20 @@
 import React, { Component } from 'react';
+import { addCoffee } from '../actions/coffeeActions';
+import { connect } from 'react-redux';
 
-export class CoffeeManagement extends Component {
+class CoffeeManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      coffee: 0,
-      addCoffee: 0
+      newCoffee: 0
     };
   }
 
-  handleChange(e) {
-    this.setState({
-      addCoffee: parseInt(e.target.value)
-    });
+  handleClick() {
+    const { onAddCoffee, name } = this.props;
+    const { newCoffee } = this.state;
+    onAddCoffee(name, newCoffee);
   }
-
-  handleClick = () => {
-    this.setState({
-      coffee: this.state.coffee + this.state.addCoffee
-    });
-  };
 
   render() {
     return (
@@ -27,19 +22,35 @@ export class CoffeeManagement extends Component {
         <form>
           <h2>
             <br />
-            {this.props.name} - {this.state.coffee} <br />
+            {this.props.name} - {this.props.coffee} <br />
             <input
               className='coffee'
               type='number'
               name='value'
               placeholder='coffee...'
-              value={this.state.addCoffee}
-              onChange={e => this.handleChange(e)}
+              value={this.state.newCoffee}
+              onChange={e =>
+                this.setState({
+                  newCoffee: parseInt(e.target.value)
+                })
+              }
             />
-            <button onClick={this.handleClick}>Add coffee</button>
+            <button
+              className='btn btn-danger m-2'
+              type='button'
+              onClick={() => this.handleClick()}
+            >
+              Add coffee
+            </button>
           </h2>
         </form>
       </div>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  onAddCoffee: (name, count) => dispatch(addCoffee(name, count))
+});
+
+export default connect(null, mapDispatchToProps)(CoffeeManagement);
